@@ -1,0 +1,60 @@
+description: gets an oauth 2.0 access token response via a device authorization grant flow
+name: github.com/opspec-pkgs/oauth2.accesstokenresponse.get
+version: 1.0.0
+inputs:
+  tokenEndpoint:
+    string:
+      constraints:
+        format: uri
+      description: token_endpoint per [rfc8414 section 2](https://datatracker.ietf.org/doc/html/rfc8414#section-2)
+  clientId:
+    string:
+      constraints:
+        minLength: 1
+  scopes:
+    array:
+      constraints:
+        items:
+          minLength: 1
+      default: []
+  deviceAuthorizationEndpoint:
+    string:
+      constraints:
+        format: uri
+      description: device_authorization_endpoint per [rfc8628 section 4](https://datatracker.ietf.org/doc/html/rfc8628#section-4)
+outputs:
+  accessTokenResponse:
+    object:
+      constraints:
+        properties:
+          refreshToken:
+            type: string
+          scope:
+            type: string
+          token:
+            type: string
+          type:
+            type: string
+        required:
+          - token
+          - type
+      description: an [rfc6749 access token response](https://datatracker.ietf.org/doc/html/rfc6749#section-5.1)
+      isSecret: true
+run:
+  container:
+    image:
+      ref: golang:1.17-alpine
+    cmd:
+      - go
+      - run
+      - ./main.go
+    dirs:
+      /src: $(./)
+    files:
+      /accessTokenResponse: $(accessTokenResponse)
+    envVars:
+      TOKEN_ENDPOINT: $(tokenEndpoint)
+      CLIENT_ID: $(clientId)
+      SCOPES: $(scopes)
+      DEVICE_AUTHORIZATION_ENDPOINT: $(deviceAuthorizationEndpoint)
+    workDir: /src
