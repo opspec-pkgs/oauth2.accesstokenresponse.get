@@ -5,6 +5,6 @@ run:
     - op:
         ref: test
     - op:
-        ref: github.com/opspec-pkgs/_.op.bootstrap#3.0.0
+        ref: github.com/opspec-pkgs/_.op.bootstrap#4.0.1
         inputs:
           srcDir: $(../..)
